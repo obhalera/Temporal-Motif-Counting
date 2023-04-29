@@ -94,6 +94,41 @@ int count_centered_three_paths_per_edge(int tail_id, int head_id, int **multigra
 /*Determines the number of 3-paths 1->2->3->4 in the input multigraph w.r.t to an ordering on the vertices, resulting from the number of edges incident on every vertex.*/
 /*For each edge (u->v) in G, if w is an in-neighbour of u that follows v, x is an outneighbour of of v that follows u in the ordering, and (x->w) forms a directed edge, only then we increment the number of 3-paths. Note that every chordal 4-cycle will contain such a 3-path.*/
 
+int count_centered_three_paths_wrt_edge_order(int **multigraph, int num_vertices)
+{
+	int centered_three_path_count = 0;
+
+	for(u = 0; u < num_vertices; u++)
+	{
+		for(v = 0; v < num_vertices; v++)
+		{
+			if(multigraph[u][v] > 0)
+			{
+				centered_three_path_count += count_centered_three_paths_per_edge_wrt_edge_order(u,v,multigraph,num_vertices);
+			}
+		}
+	}
+
+	return centered_three_path_count;
+}
+
+int count_centered_three_paths_per_edge_wrt_edge_order(int tail_id, int head_id, int **multigraph,  int num_vertices)
+{
+
+	centered_three_path_pereedge_count = 0;
+	for(w = 0; w < num_vertices; w++)
+	{
+		for(x = 0; x < num_vertices; x++)
+		{
+			if(incoming_edges(multigraph, w) + outgoing_edges(multigraph,w) > incoming_edges(multigraph, tail_id) + outgoing_edges(multigraph, tail_id) 
+				and incoming_edges(multigraph, x) + outgoing_edges(multigraph,x) > incoming_edges(multigraph,head_id) + outgoing_edges(multigraph, head_id))
+			{
+				centered_three_path_pereedge_count += (multigraph[w][head_id])*(multigraph[head_id][tail_id])*(multigraph[tail_id][x]);
+			}
+		}
+	}
+	return centered_three_path_pereedge_count;
+}
 
 int main(int argc, char *argv[]) /*argv[0]: number of vertices, argv[1]: edge multiplicity paramter for binomial distribution*/
 {
